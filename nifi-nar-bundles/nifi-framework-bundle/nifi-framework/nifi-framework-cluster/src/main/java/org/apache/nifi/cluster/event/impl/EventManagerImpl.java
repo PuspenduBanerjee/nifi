@@ -85,7 +85,7 @@ public class EventManagerImpl implements EventManager {
     public List<Event> getEvents(final String eventSource) {
         final Queue<Event> events = eventsMap.get(eventSource);
         if (events == null) {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         } else {
             return Collections.unmodifiableList(new ArrayList<>(events));
         }
@@ -111,7 +111,7 @@ public class EventManagerImpl implements EventManager {
         eventsMap.remove(eventSource);
     }
 
-    private Comparator createEventComparator() {
+    private Comparator<Event> createEventComparator() {
         return new Comparator<Event>() {
             @Override
             public int compare(final Event o1, final Event o2) {
