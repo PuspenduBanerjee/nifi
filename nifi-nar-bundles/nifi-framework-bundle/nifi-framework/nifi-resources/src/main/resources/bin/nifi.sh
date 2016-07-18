@@ -139,7 +139,7 @@ init() {
     # Locate the Java VM to execute
     locateJava "$1"
 }
-
+:
 
 install() {
         SVC_NAME=nifi
@@ -222,11 +222,11 @@ run() {
 
     LSB_EXIT_STATUS=0
     LSB_NIFI_STATUS_TEMPFILE=`mktemp -t LSB_NIFI_STATUS_TEMPFILE.XXXXXXXXXX`
-    
+
     if [ "$1" = "start" ]; then
         (eval $RUN_NIFI_CMD $@ &)
     else
-        (eval $RUN_NIFI_CMD $@)
+        (eval $RUN_NIFI_CMD $@ "| tee "$LSB_NIFI_STATUS_TEMPFILE)
     fi
 
     # Wait just a bit (3 secs) to wait for the logging to finish and then echo a new-line.
@@ -234,12 +234,15 @@ run() {
     # control back to the user
     sleep 3
     echo
-    LSB_EXIT_STATUS= getLSBStatus
+    if [ "$1" = "start" ]; then
+        LSB_EXIT_STATUS= getLSBStatus
+    fi
     return $LSB_EXIT_STATUS
 }
 
 # Standard Status codes for LSB compliance
 # See: http://refspecs.linuxbase.org/LSB_3.1.0/LSB-Core-generic/LSB-Core-generic/iniscrptact.html
+# If the status action is requested, the init script will return the following exit status codes.
 # 0	program is running or service is OK
 # 1	program is dead and /var/run pid file exists
 # 2	program is dead and /var/lock lock file exists
