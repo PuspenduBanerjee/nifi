@@ -139,7 +139,7 @@ init() {
     # Locate the Java VM to execute
     locateJava "$1"
 }
-:
+
 
 install() {
         SVC_NAME=nifi
